@@ -1,0 +1,29 @@
+rules_version = '2';
+
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    // An admin is a signed-in user whose UID has a document in /admins.
+    function isAdmin() {
+      return request.auth != null
+        && exists(/databases/$(database)/documents/admins/$(request.auth.uid));
+    }
+
+    // Public can read rumah sukan and results; only admins can change them.
+    match /rumahSukan/{rumahId} {
+      allow read: if true;
+      allow write: if isAdmin();
+    }
+
+    match /keputusan/{keputusanId} {
+      allow read: if true;
+      allow write: if isAdmin();
+    }
+
+    // Admins are added by hand in the Firebase console, never from the app.
+    match /admins/{uid} {
+      allow read: if request.auth != null && request.auth.uid == uid;
+      allow write: if false;
+    }
+  }
+}

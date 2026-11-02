@@ -1,0 +1,62 @@
+@import "tailwindcss";
+
+@theme {
+  --font-sans: "Inter", system-ui, sans-serif;
+  --font-display: "Lexend", "Inter", sans-serif;
+
+  /* School badge colours */
+  --color-hijau: #1E7B3A;
+  --color-hijau-gelap: #145A2A;
+  --color-kuning: #F2D100;
+  --color-ink: #14213D;
+  --color-muted: #4A5568;
+  --color-ground: #F5F7F2;
+  --color-line: #DDE3D6;
+  --color-line-soft: #EEF1EA;
+
+  /* Pingat */
+  --color-emas-bg: #FFF3C9;
+  --color-emas-fg: #7A5A00;
+  --color-emas-dot: #D4A20B;
+  --color-perak-bg: #EEF1F4;
+  --color-perak-fg: #4B5563;
+  --color-perak-dot: #9CA3AF;
+  --color-gangsa-bg: #F8E7DA;
+  --color-gangsa-fg: #8A4518;
+  --color-gangsa-dot: #B8692F;
+}
+
+body {
+  @apply bg-ground text-ink font-sans antialiased;
+}
+
+@layer components {
+  .btn-header {
+    @apply inline-flex min-h-11 items-center gap-2 rounded-full border-[1.5px] border-white/70 px-[18px]
+      text-sm font-semibold text-white no-underline hover:bg-white/10;
+  }
+  .btn-primary {
+    @apply inline-flex min-h-11 items-center justify-center gap-2 rounded-full bg-hijau px-5 text-sm font-semibold
+      text-white hover:bg-hijau-gelap disabled:cursor-not-allowed disabled:opacity-60;
+  }
+  .btn-secondary {
+    @apply inline-flex min-h-11 items-center justify-center gap-2 rounded-full border-[1.5px] border-[#C9D2C0] bg-white
+      px-[18px] text-sm font-semibold text-ink hover:bg-ground;
+  }
+  .pill {
+    @apply min-h-11 rounded-full border-[1.5px] border-[#C9D2C0] bg-white px-[18px] text-sm font-semibold text-ink;
+  }
+  .pill[aria-pressed='true'] {
+    @apply border-ink bg-ink text-white;
+  }
+  .card {
+    @apply rounded-2xl border border-line bg-white;
+  }
+  .field {
+    @apply min-h-11 w-full rounded-xl border border-[#C9D2C0] bg-white px-3 text-[15px] text-ink
+      focus:border-hijau focus:outline-none focus:ring-2 focus:ring-hijau/25;
+  }
+  .label {
+    @apply text-[13px] font-semibold text-muted;
+  }
+}
