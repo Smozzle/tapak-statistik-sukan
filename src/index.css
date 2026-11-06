@@ -60,3 +60,77 @@ body {
     @apply text-[13px] font-semibold text-muted;
   }
 }
+
+/*
+ * Responsive tables: put `tabel-kad` on the wrapper and `data-label="<column>"` on each <td>.
+ * Below 768px every row becomes a card with "label  value" lines. Unlayered, so it beats the
+ * Tailwind padding / min-width utilities on the same elements.
+ */
+@media (max-width: 767px) {
+  .tabel-kad {
+    overflow: visible;
+    border: 0;
+    background: transparent;
+  }
+  .tabel-kad table {
+    min-width: 0;
+  }
+  .tabel-kad thead {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip-path: inset(50%);
+  }
+  .tabel-kad table,
+  .tabel-kad tbody,
+  .tabel-kad tr,
+  .tabel-kad td {
+    display: block;
+  }
+  .tabel-kad tr {
+    margin-bottom: 0.75rem;
+    padding: 0.375rem 0;
+    border: 1px solid var(--color-line);
+    border-radius: 1rem;
+    background: #fff;
+    overflow: hidden;
+  }
+  .tabel-kad td {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.25rem 1rem;
+    padding: 0.5rem 1rem;
+    text-align: right;
+  }
+  .tabel-kad td::before {
+    content: attr(data-label);
+    flex-shrink: 0;
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--color-muted);
+    text-align: left;
+  }
+  .tabel-kad td[data-label='']::before,
+  .tabel-kad td:not([data-label])::before {
+    content: none;
+  }
+  .tabel-kad td[data-label=''] {
+    justify-content: flex-end;
+  }
+  .tabel-kad td[colspan] {
+    justify-content: flex-start;
+    text-align: left;
+  }
+}
+
+@media print {
+  body {
+    background: white;
+  }
+  main {
+    padding-top: 0;
+  }
+}

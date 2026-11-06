@@ -9,15 +9,33 @@ service cloud.firestore {
         && exists(/databases/$(database)/documents/admins/$(request.auth.uid));
     }
 
-    // Public can read rumah sukan and results; only admins can change them.
+    // Public can read rumah sukan, races, athletes and records; only admins can change them.
     match /rumahSukan/{rumahId} {
       allow read: if true;
       allow write: if isAdmin();
     }
 
-    match /keputusan/{keputusanId} {
+    match /perlumbaan/{perlumbaanId} {
       allow read: if true;
       allow write: if isAdmin();
+    }
+
+    match /peserta/{pesertaId} {
+      allow read: if true;
+      allow write: if isAdmin();
+    }
+
+    match /rekod/{rekodId} {
+      allow read: if true;
+      allow write: if isAdmin();
+    }
+
+    // Old results format. No longer used by the site, so it is closed to the public.
+    // Admins can still read it for the one-time "Tukar keputusan lama" button, but nothing can change it.
+    // Delete this block (and the collection) once the conversion is done.
+    match /keputusan/{keputusanId} {
+      allow read: if isAdmin();
+      allow write: if false;
     }
 
     // Admins are added by hand in the Firebase console, never from the app.

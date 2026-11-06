@@ -27,6 +27,18 @@ export const PINGAT = {
   3: { id: 'gangsa', nama: 'Gangsa' },
 };
 
+export const PERINGKAT = {
+  akhir: 'Akhir',
+  saringan: 'Saringan',
+};
+
+// Race status. Only 'rasmi' races count towards pingat and records.
+export const STATUS = {
+  belum: { nama: 'Belum bermula' },
+  berlangsung: { nama: 'Sedang berlangsung' },
+  rasmi: { nama: 'Keputusan rasmi' },
+};
+
 // Placeholder rumah sukan created by the admin "set up" button.
 export const RUMAH_AWAL = [
   { id: 'merah', nama: 'Rumah Merah', warna: '#C62828', urutan: 1 },
@@ -35,9 +47,35 @@ export const RUMAH_AWAL = [
 ];
 
 // One Firestore document per race: "<acaraId>_<kategoriId>".
-export const keputusanId = (acaraId, kategoriId) => `${acaraId}_${kategoriId}`;
+export const perlumbaanId = (acaraId, kategoriId) => `${acaraId}_${kategoriId}`;
 
-// Every race in the carnival: 8 acara x 2 kategori = 16.
-export const SEMUA_PERLUMBAAN = ACARA.flatMap((acara) =>
-  KATEGORI.map((kategori) => ({ acara, kategori, id: keputusanId(acara.id, kategori.id) })),
+// Default timetable used by "Jana susunan": each acara runs Lelaki then Perempuan.
+// Hari 1 = 101-108 (track individual + Lompat Jauh), Hari 2 = 201-208 (the rest).
+const HARI_ACARA = [
+  ['50m', '100m', '200m', 'lompat-jauh'],
+  ['lompat-tinggi', 'lontar-peluru', '4x100m', '4x200m'],
+];
+
+export const SUSUNAN_AWAL = HARI_ACARA.flatMap((senarai, h) =>
+  senarai.flatMap((acaraId, i) =>
+    KATEGORI.map((kategori, j) => ({
+      id: perlumbaanId(acaraId, kategori.id),
+      no: String((h + 1) * 100 + i * KATEGORI.length + j + 1),
+      acaraId,
+      kategori: kategori.id,
+      hari: h + 1,
+      tarikh: null,
+      masa: '',
+      peringkat: 'akhir',
+      status: 'belum',
+    })),
+  ),
 );
+
+// Every race in the carnival: 8 acara x 2 kategori = 16, in timetable order.
+export const SEMUA_PERLUMBAAN = SUSUNAN_AWAL.map((p) => ({
+  id: p.id,
+  no: p.no,
+  acara: ACARA.find((a) => a.id === p.acaraId),
+  kategori: KATEGORI.find((k) => k.id === p.kategori),
+}));

@@ -2,11 +2,11 @@ import { useEffect, useState } from 'react';
 import { collection, doc, getDoc, onSnapshot, orderBy, query } from 'firebase/firestore';
 import { onAuthStateChanged } from 'firebase/auth';
 import { auth, db } from '../firebase.js';
-import { DEMO_KEPUTUSAN, DEMO_RUMAH } from '../lib/demo.js';
+import { DEMO_PERLUMBAAN, DEMO_PESERTA, DEMO_REKOD, DEMO_RUMAH } from '../lib/demo.js';
 
 // Preview mode: sample data when Firebase isn't configured and VITE_DEMO=true.
 export const demoMode = !db && import.meta.env.VITE_DEMO === 'true';
-const DEMO = { rumahSukan: DEMO_RUMAH, keputusan: DEMO_KEPUTUSAN };
+const DEMO = { rumahSukan: DEMO_RUMAH, perlumbaan: DEMO_PERLUMBAAN, peserta: DEMO_PESERTA, rekod: DEMO_REKOD };
 
 // Live list of a Firestore collection. Updates on screen as soon as an admin saves.
 function useLiveCollection(name, order) {
@@ -29,7 +29,9 @@ function useLiveCollection(name, order) {
 }
 
 export const useRumahSukan = () => useLiveCollection('rumahSukan', 'urutan');
-export const useKeputusan = () => useLiveCollection('keputusan');
+export const usePerlumbaan = () => useLiveCollection('perlumbaan', 'no');
+export const usePeserta = () => useLiveCollection('peserta');
+export const useRekod = () => useLiveCollection('rekod');
 
 // Signed-in user plus whether they are listed in /admins.
 export function useAdmin() {

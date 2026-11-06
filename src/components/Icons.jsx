@@ -21,6 +21,12 @@ export const IconArrowRight = () => (
   </svg>
 );
 
+export const IconChevronRight = () => (
+  <svg width="18" height="18" viewBox="0 0 24 24" {...base} strokeWidth={2.2}>
+    <path d="M9 6l6 6-6 6" />
+  </svg>
+);
+
 export const IconArrowLeft = () => (
   <svg width="18" height="18" viewBox="0 0 24 24" {...base} strokeWidth={2.2}>
     <path d="M19 12H5" />
