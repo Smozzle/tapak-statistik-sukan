@@ -1,9 +1,10 @@
 import { useEffect, useMemo, useState } from 'react';
 import { flushSync } from 'react-dom';
-import { useSearchParams } from 'react-router-dom';
-import { usePerlumbaan, useRumahSukan } from '../../hooks/useData.js';
+import { Link, useSearchParams } from 'react-router-dom';
+import { usePerlumbaan, useRumahSukan, useTemplatSijil } from '../../hooks/useData.js';
 import { bandingNo, petaRumah } from '../../lib/format.js';
 import { senaraiSijil } from '../../lib/stats.js';
+import { ID_TEMPLAT, idTemplat } from '../../lib/sijil.js';
 import { Memuatkan } from '../../components/Kongsi.jsx';
 import { AdminTajuk } from '../../components/AdminKongsi.jsx';
 import CetakSijil from '../../components/CetakSijil.jsx';
@@ -11,6 +12,7 @@ import CetakSijil from '../../components/CetakSijil.jsx';
 export default function AdminSijil() {
   const perlumbaan = usePerlumbaan();
   const rumah = useRumahSukan();
+  const { templat } = useTemplatSijil();
   const [params, setParams] = useSearchParams();
   const [cari, setCari] = useState('');
   const [kunciCetak, setKunciCetak] = useState(null); // null = print everything shown
@@ -36,6 +38,12 @@ export default function AdminSijil() {
     return q ? semua.filter((s) => s.nama.toLowerCase().includes(q) || String(s.bib ?? '').toLowerCase() === q) : semua;
   }, [semua, cari]);
 
+  // Which templates the certificates shown will use.
+  const guna = useMemo(() => {
+    const nama = new Set(papar.map((s) => idTemplat(templat, s)));
+    return [...nama].map((n) => ID_TEMPLAT.find((t) => t.id === n)?.nama ?? 'Reka bentuk asal');
+  }, [papar, templat]);
+
   // After printing one certificate, go back to printing everything shown.
   useEffect(() => {
     const reset = () => setKunciCetak(null);
@@ -56,6 +64,7 @@ export default function AdminSijil() {
     <>
       <div className="flex flex-col gap-8">
         <AdminTajuk tajuk="Sijil" huraian="Cetak sijil pemenang dan sijil penyertaan. Nama diisi daripada keputusan rasmi." />
+        <Link to="/admin/templat-sijil" className="btn-secondary -mt-4 self-start no-underline">Ubah templat</Link>
 
         {rasmi.length === 0 ? (
           <p className="card m-0 p-6 text-muted">Belum ada keputusan rasmi. Sijil boleh dicetak selepas keputusan diumumkan.</p>
@@ -83,6 +92,11 @@ export default function AdminSijil() {
               <button type="button" className="btn-primary" disabled={papar.length === 0} onClick={() => cetak(null)}>
                 Cetak {papar.length} sijil
               </button>
+            </div>
+
+            <div className="flex flex-col gap-1 text-sm text-muted">
+              <span>Templat digunakan: <strong className="text-ink">{guna.length ? guna.join(', ') : '—'}</strong></span>
+              <span>Cetak pada saiz sebenar (100%) dan tetapkan margin kepada Tiada.</span>
             </div>
 
             {papar.length === 0 ? (
@@ -122,7 +136,7 @@ export default function AdminSijil() {
           </>
         )}
       </div>
-      <CetakSijil senarai={untukCetak} rumahById={rumahById} perlumbaanById={perlumbaanById} />
+      <CetakSijil senarai={untukCetak} rumahById={rumahById} perlumbaanById={perlumbaanById} templat={templat} />
     </>
   );
 }

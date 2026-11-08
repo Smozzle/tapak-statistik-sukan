@@ -6,7 +6,7 @@ import { usePerlumbaan, useRumahSukan } from '../../hooks/useData.js';
 import { ACARA, KATEGORI, STATUS, SUSUNAN_AWAL } from '../../lib/constants.js';
 import { bandingNo } from '../../lib/format.js';
 import { tukarKeputusanLama } from '../../lib/stats.js';
-import { KategoriChip, Memuatkan, StatusChip } from '../../components/Kongsi.jsx';
+import { KategoriChip, Memuatkan } from '../../components/Kongsi.jsx';
 import { AdminTajuk, Mesej } from '../../components/AdminKongsi.jsx';
 
 const MEDAN = ['no', 'hari', 'tarikh', 'masa', 'status'];
@@ -143,11 +143,11 @@ export default function AdminSusunan() {
       ) : (
         <form onSubmit={simpan} className="flex flex-col gap-4">
           <div className="card tabel-kad overflow-x-auto">
-            <table className="w-full min-w-[1100px] border-collapse text-[15px]">
+            <table className="w-full border-collapse text-[15px]">
               <thead>
                 <tr className="bg-[#F0F4EC] text-left">
                   {['No', 'Acara', 'Kategori', 'Hari', 'Tarikh', 'Masa', 'Status', ''].map((h, i) => (
-                    <th key={h || i} scope="col" className="px-3 py-3.5 text-[13px] font-semibold text-muted">{h}</th>
+                    <th key={h || i} scope="col" className="px-2 py-3.5 text-[13px] font-semibold text-muted">{h}</th>
                   ))}
                 </tr>
               </thead>
@@ -158,40 +158,39 @@ export default function AdminSusunan() {
                   const label = `${nama} ${kat}`;
                   return (
                     <tr key={p.id} className={`border-t border-line-soft ${draf[p.id] ? 'bg-emas-bg/40' : ''}`}>
-                      <td data-label="No" className="px-3 py-2">
-                        <input className="field w-20" aria-label={`Nombor ${label}`} value={nilai(p, 'no')}
+                      <td data-label="No" className="px-2 py-2">
+                        <input className="field w-16 px-2" aria-label={`Nombor ${label}`} value={nilai(p, 'no')}
                           onChange={ubah(p, 'no')} inputMode="numeric" />
                       </td>
-                      <td data-label="Acara" className="px-3 py-2 font-semibold">{nama}</td>
-                      <td data-label="Kategori" className="px-3 py-2"><KategoriChip kategori={p.kategori} /></td>
-                      <td data-label="Hari" className="px-3 py-2">
-                        <select className="field w-24" aria-label={`Hari ${label}`} value={nilai(p, 'hari')} onChange={ubah(p, 'hari')}>
+                      <td data-label="Acara" className="px-2 py-2 font-semibold">{nama}</td>
+                      <td data-label="Kategori" className="px-2 py-2"><KategoriChip kategori={p.kategori} /></td>
+                      <td data-label="Hari" className="px-2 py-2">
+                        <select className="field w-[5.5rem] px-2" aria-label={`Hari ${label}`} value={nilai(p, 'hari')} onChange={ubah(p, 'hari')}>
                           <option value="1">Hari 1</option>
                           <option value="2">Hari 2</option>
                         </select>
                       </td>
-                      <td data-label="Tarikh" className="px-3 py-2">
-                        <input type="date" className="field w-44" aria-label={`Tarikh ${label}`} value={nilai(p, 'tarikh')}
+                      <td data-label="Tarikh" className="px-2 py-2">
+                        <input type="date" className="field w-40 px-2" aria-label={`Tarikh ${label}`} value={nilai(p, 'tarikh')}
                           onChange={ubah(p, 'tarikh')} />
                       </td>
-                      <td data-label="Masa" className="px-3 py-2">
-                        <input className="field w-24" aria-label={`Masa ${label}`} value={nilai(p, 'masa')} onChange={ubah(p, 'masa')}
+                      <td data-label="Masa" className="px-2 py-2">
+                        <input className="field w-[4.5rem] px-2" aria-label={`Masa ${label}`} value={nilai(p, 'masa')} onChange={ubah(p, 'masa')}
                           placeholder="0750" maxLength={4} inputMode="numeric" />
                       </td>
-                      <td data-label="Status" className="px-3 py-2">
-                        <select className="field w-52" aria-label={`Status ${label}`} value={nilai(p, 'status')} onChange={ubah(p, 'status')}>
+                      <td data-label="Status" className="px-2 py-2">
+                        <select className="field w-44 px-2" aria-label={`Status ${label}`} value={nilai(p, 'status')} onChange={ubah(p, 'status')}>
                           {Object.entries(STATUS).map(([id, s]) => <option key={id} value={id}>{s.nama}</option>)}
                         </select>
                       </td>
-                      <td data-label="" className="px-3 py-2">
-                        <div className="flex flex-wrap items-center justify-end gap-2">
-                          <span className="hidden xl:inline"><StatusChip status={p.status} /></span>
-                          <Link to={`/admin/senarai-mula/${p.id}`} className="btn-secondary min-h-11 px-3 no-underline">
+                      <td data-label="" className="px-2 py-2">
+                        <div className="flex flex-wrap items-center justify-end gap-1.5">
+                          <Link to={`/admin/senarai-mula/${p.id}`} className="btn-secondary min-h-11 px-3 text-[13px] no-underline">
                             Peserta{p.senaraiMula?.length ? ` (${p.senaraiMula.length})` : ''}
                           </Link>
-                          <Link to={`/admin/keputusan/${p.id}`} className="btn-secondary min-h-11 px-3 no-underline">Keputusan</Link>
+                          <Link to={`/admin/keputusan/${p.id}`} className="btn-secondary min-h-11 px-3 text-[13px] no-underline">Keputusan</Link>
                           {p.status === 'rasmi' && (
-                            <Link to={`/admin/sijil?perlumbaan=${p.id}`} className="btn-secondary min-h-11 px-3 no-underline">Sijil</Link>
+                            <Link to={`/admin/sijil?perlumbaan=${p.id}`} className="btn-secondary min-h-11 px-3 text-[13px] no-underline">Sijil</Link>
                           )}
                         </div>
                       </td>

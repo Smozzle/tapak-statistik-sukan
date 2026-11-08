@@ -14,6 +14,51 @@
   .cetak-sijil .sijil:last-child {
     break-after: auto;
   }
+
+  /* Uploaded template: edge to edge, one page each. 1mm shorter than A4 so it never spills onto a blank page. */
+  @page sijil-l {
+    size: A4 landscape;
+    margin: 0;
+  }
+  @page sijil-p {
+    size: A4 portrait;
+    margin: 0;
+  }
+  .cetak-sijil .sijil-templat {
+    break-after: page;
+  }
+  .cetak-sijil .sijil-templat:last-child {
+    break-after: auto;
+  }
+  .cetak-sijil .sijil-templat-l {
+    page: sijil-l;
+    width: 297mm;
+    height: 209mm;
+  }
+  .cetak-sijil .sijil-templat-p {
+    page: sijil-p;
+    width: 210mm;
+    height: 296mm;
+  }
+}
+
+.sijil-templat {
+  position: relative;
+  overflow: hidden;
+  background: #fff;
+}
+.sijil-latar {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+}
+.sijil-medan {
+  position: absolute;
+  margin: 0;
+  line-height: 1.15;
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
 }
 
 .cetak-sijil {

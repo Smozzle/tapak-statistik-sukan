@@ -47,6 +47,11 @@ service cloud.firestore {
       allow delete: if isAdmin() && request.auth.uid != uid;
     }
 
+    // Certificate templates (uploaded design and field positions). Admins only.
+    match /templatSijil/{id} {
+      allow read, write: if isAdmin();
+    }
+
     // Someone who signed up asks for admin access. Only they can create their own request.
     match /permohonanAdmin/{uid} {
       allow read: if request.auth != null && (request.auth.uid == uid || isAdmin());

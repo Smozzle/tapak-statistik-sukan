@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { collection, doc, onSnapshot, orderBy, query, serverTimestamp, setDoc } from 'firebase/firestore';
 import { onAuthStateChanged } from 'firebase/auth';
 import { auth, db } from '../firebase.js';
@@ -78,3 +78,10 @@ export function hantarPermohonanAdmin(user, nama) {
 
 export const usePermohonanAdmin = () => useLiveCollection('permohonanAdmin');
 export const useSenaraiAdmin = () => useLiveCollection('admins');
+
+/** Live certificate templates as { [id]: doc } (admin pages only). */
+export function useTemplatSijil() {
+  const { data, loading } = useLiveCollection('templatSijil');
+  const templat = useMemo(() => Object.fromEntries(data.map(({ id, ...isi }) => [id, isi])), [data]);
+  return { templat, loading };
+}

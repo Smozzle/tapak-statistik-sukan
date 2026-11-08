@@ -496,6 +496,7 @@ export function senaraiSijil(perlumbaanList, { jenis = 'pemenang' } = {}) {
           catatan: e.status ? null : (e.catatan || null),
           perlumbaan: p.id,
           no: p.no,
+          tarikh: p.tarikh ?? null,
           acara: acara?.nama ?? p.acaraId,
           kategori: kategori?.nama ?? p.kategori,
         });

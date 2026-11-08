@@ -9,7 +9,7 @@ const MENU = [
   { to: '/admin/peserta', nama: 'Peserta', aktif: (p) => p.startsWith('/admin/peserta') },
   { to: '/admin/rekod', nama: 'Rekod', aktif: (p) => p.startsWith('/admin/rekod') },
   { to: '/admin/rumah', nama: 'Rumah sukan', aktif: (p) => p.startsWith('/admin/rumah') },
-  { to: '/admin/sijil', nama: 'Sijil', aktif: (p) => p.startsWith('/admin/sijil') },
+  { to: '/admin/sijil', nama: 'Sijil', aktif: (p) => p.startsWith('/admin/sijil') || p.startsWith('/admin/templat-sijil') },
   { to: '/admin/pentadbir', nama: 'Pentadbir', aktif: (p) => p.startsWith('/admin/pentadbir') },
 ];
 

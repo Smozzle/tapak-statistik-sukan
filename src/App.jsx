@@ -17,6 +17,7 @@ import AdminPeserta from './pages/admin/AdminPeserta.jsx';
 import AdminRekod from './pages/admin/AdminRekod.jsx';
 import AdminRumah from './pages/admin/AdminRumah.jsx';
 import AdminSijil from './pages/admin/AdminSijil.jsx';
+import AdminTemplatSijil from './pages/admin/AdminTemplatSijil.jsx';
 import AdminPentadbir from './pages/admin/AdminPentadbir.jsx';
 
 export default function App() {
@@ -46,6 +47,7 @@ export default function App() {
         <Route path="rekod" element={<AdminRekod />} />
         <Route path="rumah" element={<AdminRumah />} />
         <Route path="sijil" element={<AdminSijil />} />
+        <Route path="templat-sijil" element={<AdminTemplatSijil />} />
         <Route path="pentadbir" element={<AdminPentadbir />} />
       </Route>
     </Routes>

@@ -19,6 +19,7 @@ export default function AdminPeserta() {
   const [semakan, setSemakan] = useState(null);
   const [mesej, setMesej] = useState(null);
   const [busy, setBusy] = useState(false);
+  const [namaFail, setNamaFail] = useState('');
 
   const set = (key) => (e) => setForm((f) => ({ ...f, [key]: e.target.value }));
   const rumahById = petaRumah(rumah.data);
@@ -201,7 +202,12 @@ export default function AdminPeserta() {
           Satu peserta setiap baris: <code>bib,nama,rumah,kategori</code>. Rumah ialah nama atau ID rumah sukan;
           kategori ialah Lelaki / Perempuan (atau L / P). Bib yang sudah wujud akan dikemas kini, bukan digandakan.
         </p>
-        <input type="file" accept=".csv,.txt,text/csv" onChange={bacaFail} aria-label="Pilih fail CSV" className="text-sm" />
+        <label className="flex w-full cursor-pointer flex-wrap items-center gap-3 rounded-xl border-2 border-dashed border-[#C9D2C0] bg-white p-3 text-sm text-ink focus-within:border-hijau hover:border-hijau sm:max-w-md">
+          <span className="btn-primary pointer-events-none min-h-9 px-4">Pilih fail</span>
+          <span className="text-muted">{namaFail || 'Tiada fail dipilih'}</span>
+          <input type="file" accept=".csv,.txt,text/csv" className="sr-only"
+            onChange={(e) => { setNamaFail(e.target.files?.[0]?.name ?? ''); bacaFail(e); }} />
+        </label>
         <label className="flex flex-col gap-1.5">
           <span className="label">Atau tampal di sini</span>
           <textarea className="field min-h-32 py-2 font-mono text-sm" value={csv}

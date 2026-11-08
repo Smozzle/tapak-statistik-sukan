@@ -24,6 +24,7 @@ Built with React, Vite and Tailwind CSS on Firebase (Firestore and Authenticatio
 | `/admin/rekod` | Admins | Set the record for each acara and kategori |
 | `/admin/rumah` | Admins | Set up the rumah sukan and change their names and colours |
 | `/admin/sijil` | Admins | Print certificates (winners or participation) for official races, all at once or one at a time |
+| `/admin/templat-sijil` | Admins | Upload the school's certificate design and drag the text fields onto it |
 | `/admin/pentadbir` | Admins | Approve or reject admin sign-up requests, and remove admins |
 
 Only races with status `rasmi` count towards pingat, rankings and record checks.
@@ -97,6 +98,8 @@ Open **Sijil** (or the **Sijil** button beside **Keputusan** on **Susunan**, for
 - A relay team gets one certificate for each runner in `ahli` (or the team name if no runners were entered).
 - Filter by race and type (kept in the address, e.g. `?perlumbaan=100m_lelaki&jenis=penyertaan`) and search by name or bib.
 - **Cetak N sijil** prints everything shown, one A4 landscape page each. The **Cetak** button on a row prints only that certificate. Choose *Save as PDF* in the print dialog if you want a file.
+- **Own certificate design (templat):** on **Sijil** click **Ubah templat** (`/admin/templat-sijil`). Pick *Pemenang*, *Penyertaan*, or *Emas / Perak / Gangsa* (a medal template overrides *Pemenang* for that medal, and falls back to it when missing). Upload the design as an image (A4, landscape or portrait). It is shrunk in the browser to about 1754×1240 px and saved as a JPEG under 900 KB, so no Firebase Storage is needed. Drag each field (nama, rumah, bib, tempat, acara, catatan, tarikh, kejohanan) to its place, or select it and use the arrow keys (Shift = bigger steps). Use the side panel for show/hide, font size, colour, bold, alignment and width. Untick **Cetak gambar latar** to print only the text on pre-printed certificate paper. Click **Simpan**; **Padam templat** goes back to the built-in design.
+- When printing a template, set the browser to 100% scale with margins set to *Tiada* (None), so the page prints edge to edge.
 - The carnival name, venue and logo come from `KEJOHANAN_LALAI` in `src/components/CetakKeputusan.jsx`. The date comes from the race.
 
 ### Convert results from the old version
@@ -126,6 +129,7 @@ Rumah is the name or ID of a rumah sukan. Kategori is Lelaki or Perempuan (or L 
 | `peserta` | auto | `bib`, `nama`, `rumahId`, `kategori` |
 | `rekod` | `<acara>_<kategori>` | `catatan` ("13.85 s"), `nilai` (number), `nama`, `rumahId`, `tahun` |
 | `admins` | Firebase user UID | `nama`, `email`, `ditambah`, `ditambahOleh` (set when approved; the first admin can have any fields) |
+| `templatSijil` | `pemenang`, `penyertaan`, `emas`, `perak`, `gangsa` | `gambar` (JPEG data URL), `orientasi` (`landscape` or `portrait`), `cetakLatar`, `medan` (`{ [nama, rumah, bib, tempat, acara, catatan, tarikh, kejohanan]: { x, y, lebar (% of page), saiz (pt), warna, tebal, jajar, papar } }`), `dikemaskini`. Admins only |
 | `permohonanAdmin` | Firebase user UID | `nama`, `email`, `dibuat`. A pending admin request; deleted when approved or rejected |
 | `keputusan` | old format, read-only | `acaraId`, `kategori`, `tempat1`–`3`, `catatan1`–`3`, `atlet1`–`3`. Only used by the one-time conversion |
 
@@ -166,6 +170,8 @@ src/
   components/       Layout (header, menu, footer), shared chips, route guard
   hooks/useData.js  Live Firestore data and admin check
   lib/constants.js  Acara, kategori, status, default timetable, placeholder rumah sukan
+  lib/sijil.js      Certificate template helpers (pick template, field text, image sizing)
+  lib/gambar.js     Browser image resize and JPEG compression for templates
   lib/stats.js      Medal counting, ranking, records, result validation, old-data conversion
   lib/csv.js        CSV import parsing
   lib/format.js     Time, date and sorting helpers
