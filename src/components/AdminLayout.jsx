@@ -9,6 +9,8 @@ const MENU = [
   { to: '/admin/peserta', nama: 'Peserta', aktif: (p) => p.startsWith('/admin/peserta') },
   { to: '/admin/rekod', nama: 'Rekod', aktif: (p) => p.startsWith('/admin/rekod') },
   { to: '/admin/rumah', nama: 'Rumah sukan', aktif: (p) => p.startsWith('/admin/rumah') },
+  { to: '/admin/sijil', nama: 'Sijil', aktif: (p) => p.startsWith('/admin/sijil') },
+  { to: '/admin/pentadbir', nama: 'Pentadbir', aktif: (p) => p.startsWith('/admin/pentadbir') },
 ];
 
 // Frame for every /admin page except login. The admin menu and "Log keluar" live only here,
@@ -19,7 +21,7 @@ export default function AdminLayout() {
 
   return (
     <div className="flex min-h-screen flex-col">
-      <header className="bg-ink text-white">
+      <header className="bg-ink text-white print:hidden">
         <div className="mx-auto flex max-w-6xl flex-wrap items-center justify-between gap-3 px-4 py-3 sm:px-6">
           <div className="flex flex-wrap items-center gap-x-6 gap-y-2">
             <span className="font-display text-lg font-semibold">Papan admin</span>
@@ -54,7 +56,7 @@ export default function AdminLayout() {
           </div>
         </div>
       </header>
-      <div className="h-1.5 bg-kuning" />
+      <div className="h-1.5 bg-kuning print:hidden" />
 
       <main className="mx-auto flex w-full max-w-6xl flex-1 flex-col gap-8 px-4 pb-14 pt-8 sm:px-6 sm:pt-10">
         {!firebaseReady && (

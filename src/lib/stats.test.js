@@ -3,7 +3,7 @@ import assert from 'node:assert/strict';
 import {
   parseCatatan, kiraPingat, susunKedudukan, barisRumah, adalahRekodBaharu, senaraiPemecahRekod,
   rekodPeserta, perlumbaanTerkini, pingatMengikutJenis, binaSenaraiMula, semakSenaraiMula, acaraPeserta, jiranPerlumbaan, binaKeputusan, semakKeputusan, tukarKeputusanLama,
-  bacaCubaan, formatMasa, susunKeputusan, susunEntri,
+  bacaCubaan, formatMasa, susunKeputusan, susunEntri, senaraiSijil,
 } from './stats.js';
 import { ACARA, SUSUNAN_AWAL, SEMUA_PERLUMBAAN } from './constants.js';
 
@@ -458,4 +458,55 @@ test('tukarKeputusanLama converts an old keputusan document', () => {
 test('SEMUA_PERLUMBAAN lists 16 races in timetable order', () => {
   assert.equal(SEMUA_PERLUMBAAN.length, 16);
   assert.equal(SEMUA_PERLUMBAAN[2].id, '100m_lelaki');
+});
+
+test('senaraiSijil: winners are ked 1-3 of official races only', () => {
+  const list = [
+    p('100m', 'lelaki', '103', 'rasmi', [['biru', { nama: 'Ali', catatan: '13.2 s' }], ['merah', { nama: 'Bob' }], ['kuning', { nama: 'Cai' }], ['biru', { nama: 'Dan' }]]),
+    p('50m', 'lelaki', '101', 'rasmi', [['merah', { nama: 'Eli' }], ['biru'], ['kuning']]),
+    p('200m', 'lelaki', '105', 'berlangsung', [['merah'], ['biru'], ['kuning']]),
+  ];
+  const s = senaraiSijil(list, { jenis: 'pemenang' });
+  assert.equal(s.length, 6);
+  assert.deepEqual(s.slice(0, 3).map((x) => x.perlumbaan), ['50m_lelaki', '50m_lelaki', '50m_lelaki']);
+  const ali = s.find((x) => x.nama === 'Ali');
+  assert.equal(ali.tempat, 'Pertama');
+  assert.equal(ali.pingat, 'Emas');
+  assert.equal(ali.catatan, '13.2 s');
+  assert.equal(ali.acara, '100M');
+  assert.equal(ali.kategori, 'Lelaki');
+  assert.equal(new Set(s.map((x) => x.kunci)).size, s.length);
+  assert.equal(s.find((x) => x.nama === 'Dan'), undefined);
+});
+
+test('senaraiSijil: participation keeps TT, skips TH and winners', () => {
+  const list = [{
+    id: '100m_lelaki', no: '103', acaraId: '100m', kategori: 'lelaki', status: 'rasmi',
+    keputusan: [
+      { ked: 1, nama: 'A', rumahId: 'merah', bib: '1', catatan: '13 s' },
+      { ked: 4, nama: 'D', rumahId: 'biru', bib: '4', catatan: '15 s' },
+      { ked: null, status: 'TT', nama: 'T', rumahId: 'biru', bib: '5', catatan: 'x' },
+      { ked: null, status: 'TH', nama: 'H', rumahId: 'biru', bib: '6', catatan: '' },
+    ],
+  }];
+  const s = senaraiSijil(list, { jenis: 'penyertaan' });
+  assert.deepEqual(s.map((x) => x.nama), ['D', 'T']);
+  assert.equal(s[0].tempat, null);
+  assert.equal(s[0].catatan, '15 s');
+  assert.equal(s[1].catatan, null);
+});
+
+test('senaraiSijil: relay gives one certificate per runner, without bib', () => {
+  const list = [{
+    id: '4x100m_lelaki', no: '205', acaraId: '4x100m', kategori: 'lelaki', status: 'rasmi',
+    keputusan: [
+      { ked: 1, nama: 'Rumah Merah', rumahId: 'merah', bib: '', ahli: ['A', 'B', 'C', 'D'] },
+      { ked: 2, nama: 'Rumah Biru', rumahId: 'biru', bib: '' },
+    ],
+  }];
+  const s = senaraiSijil(list, { jenis: 'pemenang' });
+  assert.deepEqual(s.map((x) => x.nama), ['A', 'B', 'C', 'D', 'Rumah Biru']);
+  assert.equal(s[0].bib, null);
+  assert.equal(s[4].tempat, 'Kedua');
+  assert.equal(new Set(s.map((x) => x.kunci)).size, 5);
 });

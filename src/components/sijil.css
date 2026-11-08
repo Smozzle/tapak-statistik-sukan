@@ -1,0 +1,105 @@
+/* Certificates (CetakSijil). Shown only when printing; A4 landscape, one per page. */
+
+@media print {
+  @page sijil {
+    size: A4 landscape;
+    margin: 10mm;
+  }
+
+  .cetak-sijil .sijil {
+    page: sijil;
+    break-after: page;
+    height: 186mm;
+  }
+  .cetak-sijil .sijil:last-child {
+    break-after: auto;
+  }
+}
+
+.cetak-sijil {
+  font-family: Georgia, 'Times New Roman', serif;
+  --warna-sijil: #1e7b3a;
+}
+
+.sijil {
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  padding: 8mm 14mm 9mm;
+  border: 3mm double var(--warna-sijil);
+  overflow: hidden;
+}
+.sijil-emas { --warna-sijil: #b8860b; }
+.sijil-perak { --warna-sijil: #8a8f98; }
+.sijil-gangsa { --warna-sijil: #a8672a; }
+
+.sijil-logo {
+  width: 24mm;
+  height: 24mm;
+  object-fit: contain;
+}
+.sijil-kejohanan {
+  margin: 2mm 0 0;
+  font-size: 15pt;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+.sijil-tajuk {
+  margin: 4mm 0 0;
+  font-size: 34pt;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  color: var(--warna-sijil);
+}
+.sijil-kecil {
+  margin: 4mm 0 0;
+  font-size: 13pt;
+  font-style: italic;
+}
+.sijil-nama {
+  margin: 4mm 0 0;
+  min-width: 60%;
+  max-width: 100%;
+  padding: 0 6mm 1.5mm;
+  border-bottom: 0.5mm solid #000;
+  font-size: 28pt;
+  font-weight: 700;
+  text-transform: uppercase;
+  text-wrap: balance;
+}
+.sijil-rumah {
+  margin: 2mm 0 0;
+  font-size: 13pt;
+}
+.sijil-acara {
+  margin: 3mm 0 0;
+  font-size: 22pt;
+  font-weight: 700;
+  text-transform: uppercase;
+}
+.sijil-catatan {
+  margin: 2mm 0 0;
+  font-size: 13pt;
+}
+.sijil-tempat {
+  margin: 1mm 0 0;
+  font-size: 12pt;
+}
+.sijil-tandatangan {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 40mm;
+  width: 80%;
+  margin-top: auto;
+  font-size: 11pt;
+  font-weight: 700;
+  text-transform: uppercase;
+}
+.sijil-tandatangan .garis {
+  margin-bottom: 1.5mm;
+  border-top: 0.4mm solid #000;
+  height: 14mm;
+}

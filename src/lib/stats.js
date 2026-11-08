@@ -462,3 +462,45 @@ export function tukarKeputusanLama(lama, rumahList) {
     });
   return { keputusan, status: 'rasmi' };
 }
+
+const TEMPAT_SIJIL = { 1: 'Pertama', 2: 'Kedua', 3: 'Ketiga' };
+
+/**
+ * One certificate per person for the official races, in race-number order.
+ * jenis 'pemenang': ked 1-3 without a status. 'penyertaan': everyone else except TH (tidak hadir).
+ * A relay gives one certificate per runner in `ahli` (the team name when `ahli` is empty).
+ * Returns { kunci, jenis, nama, rumahId, bib (null for relays), ked, tempat, pingat, catatan,
+ *           perlumbaan (id), no, acara, kategori }.
+ */
+export function senaraiSijil(perlumbaanList, { jenis = 'pemenang' } = {}) {
+  const hasil = [];
+  const susun = [...perlumbaanList].filter(rasmi).sort((a, b) => String(a.no).localeCompare(String(b.no), undefined, { numeric: true }));
+  for (const p of susun) {
+    const acara = ACARA.find((a) => a.id === p.acaraId);
+    const kategori = KATEGORI.find((k) => k.id === p.kategori);
+    susunEntri(entri(p)).forEach((e, i) => {
+      const menang = !e.status && Number.isInteger(e.ked) && Boolean(PINGAT[e.ked]);
+      if (jenis === 'pemenang' ? !menang : (menang || e.status === 'TH')) return;
+      const relay = Boolean(e.ahli?.length);
+      const nama = relay ? e.ahli.filter((n) => n && n.trim()) : [e.nama];
+      (nama.length ? nama : [e.nama]).forEach((n, j) => {
+        hasil.push({
+          kunci: `${p.id}_${i}_${j}`,
+          jenis: menang && jenis === 'pemenang' ? 'pemenang' : 'penyertaan',
+          nama: n,
+          rumahId: e.rumahId,
+          bib: relay ? null : (e.bib ?? null),
+          ked: menang ? e.ked : (e.ked ?? null),
+          tempat: menang ? TEMPAT_SIJIL[e.ked] : null,
+          pingat: menang ? PINGAT[e.ked].nama : null,
+          catatan: e.status ? null : (e.catatan || null),
+          perlumbaan: p.id,
+          no: p.no,
+          acara: acara?.nama ?? p.acaraId,
+          kategori: kategori?.nama ?? p.kategori,
+        });
+      });
+    });
+  }
+  return hasil;
+}

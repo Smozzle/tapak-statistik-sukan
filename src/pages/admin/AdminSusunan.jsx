@@ -190,6 +190,9 @@ export default function AdminSusunan() {
                             Peserta{p.senaraiMula?.length ? ` (${p.senaraiMula.length})` : ''}
                           </Link>
                           <Link to={`/admin/keputusan/${p.id}`} className="btn-secondary min-h-11 px-3 no-underline">Keputusan</Link>
+                          {p.status === 'rasmi' && (
+                            <Link to={`/admin/sijil?perlumbaan=${p.id}`} className="btn-secondary min-h-11 px-3 no-underline">Sijil</Link>
+                          )}
                         </div>
                       </td>
                     </tr>

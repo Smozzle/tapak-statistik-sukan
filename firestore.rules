@@ -38,10 +38,28 @@ service cloud.firestore {
       allow write: if false;
     }
 
-    // Admins are added by hand in the Firebase console, never from the app.
+    // The first admin is added by hand in the Firebase console. After that, admins approve
+    // requests from the "Pentadbir" page.
     match /admins/{uid} {
-      allow read: if request.auth != null && request.auth.uid == uid;
-      allow write: if false;
+      allow read: if request.auth != null && (request.auth.uid == uid || isAdmin());
+      allow create: if isAdmin();
+      allow update: if false;
+      allow delete: if isAdmin() && request.auth.uid != uid;
+    }
+
+    // Someone who signed up asks for admin access. Only they can create their own request.
+    match /permohonanAdmin/{uid} {
+      allow read: if request.auth != null && (request.auth.uid == uid || isAdmin());
+      allow create: if request.auth != null
+        && request.auth.uid == uid
+        && request.resource.data.keys().hasOnly(['nama', 'email', 'dibuat'])
+        && request.resource.data.nama is string
+        && request.resource.data.nama.size() >= 1
+        && request.resource.data.nama.size() <= 80
+        && request.resource.data.email == request.auth.token.email
+        && request.resource.data.dibuat == request.time;
+      allow update: if false;
+      allow delete: if isAdmin();
     }
   }
 }
